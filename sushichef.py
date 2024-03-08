@@ -119,10 +119,5 @@ class ILOSIYBChef(SushiChef):
 
 
 if __name__ == "__main__":
-    # order of execution in the chef:
-    # 1. pre_run
-    # 2. download_content
-    # 3. construct_channel
-
     chef = ILOSIYBChef()
     chef.main()
