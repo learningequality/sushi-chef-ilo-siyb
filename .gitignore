@@ -160,6 +160,7 @@ cython_debug/
 #.idea/
 chefdata/
 .ricecookerfilecache/
+.ricecooker-temp/
 restore/
 storage/
 credentials/credentials.json

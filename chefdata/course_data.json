@@ -1,5 +1,5 @@
 {
-    "Start your business":{
+    "Start Your Business":{
        "1":{
           "title":"Unit 1 - Introduction",
           "route":"kJkbqCYpRnLFDoyxK5F8TVbBNkFdluCh",
@@ -246,7 +246,7 @@
           ]
        }
     },
-    "Improve your business":{
+    "Improve Your Business":{
        "1":{
           "title":"Unit 1 - You as an entrepreneur",
           "route":"WfS3ewseORO9nHdWZLRTS-Kq1617nKF9",
@@ -334,5 +334,43 @@
              "W3acXdRAu8Xb_GXS_zlZ5OGuHSjFb5vhH-SWOT analysis.docx"
           ]
        }
+    },
+    "Training manuals": {
+      "Start Your Business": {
+          "1": {
+          "file": "SYB-Manual.pdf",
+          "title": "Start Your Business - Manual"
+          },
+          "2": {
+          "file": "SYB-Business_plan.pdf",
+          "title": "Start Your Business - Business plan"
+          }
+      },
+      "Improve Your Business": {
+          "1": {
+          "file": "GYB-Manual.pdf",
+          "title": "Improve Your Business - Generate your business idea"
+          },
+          "2": {
+          "file": "IYB-Buying For Your Business.pdf",
+          "title": "Improve Your Business - Buying and stock control"
+          },
+          "3": {
+          "file": "IYB-Costing.pdf",
+          "title": "Improve Your Business - Costing"
+          },
+          "4": {
+          "file": "IYB-Marketing.pdf",
+          "title": "Improve Your Business - Marketing"
+          },
+          "5": {
+          "file": "IYB-Planning For Your Business.pdf",
+          "title": "Improve Your Business - Planning for your business"
+          },
+          "6": {
+          "file": "Record Keeping IYB.pdf",
+          "title": "Improve Your Business - Record keeping"
+          }
+      }
     }
  }
