@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
+from typing import Any, Dict, List
 
 import requests
 from le_utils.constants.labels import subjects
@@ -8,6 +9,7 @@ from ricecooker.chefs import SushiChef
 from ricecooker.classes.files import DocumentFile
 from ricecooker.classes.files import HTMLZipFile
 from ricecooker.classes.licenses import get_license
+from ricecooker.classes.nodes import ChannelNode
 from ricecooker.classes.nodes import DocumentNode
 from ricecooker.classes.nodes import HTML5AppNode
 from ricecooker.classes.nodes import TopicNode
@@ -32,7 +34,7 @@ CHANNEL_LICENSE = get_license(
 )
 SESSION = requests.Session()
 
-categories = [
+categories: List[str] = [
     subjects.TECHNICAL_AND_VOCATIONAL_TRAINING,
     subjects.ENTREPRENEURSHIP,
     subjects.FINANCIAL_LITERACY,
@@ -42,7 +44,7 @@ categories = [
 
 
 class ILOSIYBChef(SushiChef):
-    channel_info = {
+    channel_info: Dict[str, str] = {
         "CHANNEL_SOURCE_DOMAIN": SOURCE_DOMAIN,
         "CHANNEL_SOURCE_ID": CHANNEL_SOURCE_ID,
         "CHANNEL_TITLE": CHANNEL_NAME,
@@ -51,7 +53,7 @@ class ILOSIYBChef(SushiChef):
         "CHANNEL_DESCRIPTION": CHANNEL_DESCRIPTION,
     }
 
-    def download_content(self):
+    def download_content(self) -> None:
         LOGGER.info("Downloading needed files from Google Drive folders")
         download_gdrive_files()
         LOGGER.info("Uncompressing courses in scorm format")
@@ -71,11 +73,11 @@ class ILOSIYBChef(SushiChef):
                     lesson_dir
                 )
 
-    def pre_run(self, args, options):
+    def pre_run(self, args: Any, options: dict) -> None:
         self.course_data = json.load(open("chefdata/course_data.json"))
         LOGGER.info("Downloading files from Google Drive folders")
 
-    def construct_channel(self, *args, **kwargs):
+    def construct_channel(self, *args, **kwargs) -> ChannelNode:
         channel = self.get_channel(*args, **kwargs)
         for course in self.course_data.keys():
             course_dir = course.replace(" ", "_").lower()

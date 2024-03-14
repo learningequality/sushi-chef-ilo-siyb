@@ -3,11 +3,13 @@ import os
 import pickle
 import shutil
 import zipfile
+from typing import Any, List, Optional
 
 from bs4 import BeautifulSoup
+from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
+from googleapiclient.discovery import build, Resource
 from googleapiclient.http import MediaIoBaseDownload
 from PIL import Image
 from ricecooker.config import LOGGER
@@ -51,7 +53,7 @@ JS_ADDITION = """
 """
 
 
-def get_credentials():
+def get_credentials() -> Credentials:
     """Gets valid user credentials from storage.
 
     If nothing has been stored, or if the stored credentials are invalid,
@@ -79,7 +81,7 @@ def get_credentials():
     return creds
 
 
-def download_file(service, file_id, file_name):
+def download_file(service: Resource, file_id: str, file_name: str) -> None:
     """Downloads a file from the Drive.
 
     Args:
@@ -106,7 +108,7 @@ def download_file(service, file_id, file_name):
         print(f"Error downloading file {file_name}: {e}")
 
 
-def download_files(gdrive_folder_id, mimeType, output_folder):
+def download_files(gdrive_folder_id: str, mimeType: str, output_folder: str) -> None:
     creds = get_credentials()
     service = build("drive", "v3", credentials=creds)
     # List files in the folder
@@ -125,7 +127,7 @@ def download_files(gdrive_folder_id, mimeType, output_folder):
             download_file(service, item["id"], f"{output_folder}{item['name']}")
 
 
-def download_gdrive_files():
+def download_gdrive_files() -> None:
 
     download_files(SCORM_FILES_DRIVE_ID, "application/zip", "chefdata/")
     download_files(
@@ -136,7 +138,7 @@ def download_gdrive_files():
     )
 
 
-def unzip_scorm_files():
+def unzip_scorm_files() -> None:
     for f in os.listdir("chefdata"):
         file_path = os.path.join("chefdata", f)
         course_path = os.path.splitext(file_path)[0]
@@ -150,7 +152,7 @@ def unzip_scorm_files():
                 LOGGER.info(f"{course_dirname} already unzipped")
 
 
-def resize_images(directory, max_height=640):
+def resize_images(directory: str, max_height: int = 640) -> None:
     for filename in os.listdir(directory):
         if filename.endswith(".png") or filename.endswith(".jpg"):
             filepath = os.path.join(directory, filename)
@@ -162,7 +164,7 @@ def resize_images(directory, max_height=640):
                     resized.save(filepath, format=resized.format)
 
 
-def prepare_lesson_html5_directory(lesson_data, lesson_dir):
+def prepare_lesson_html5_directory(lesson_data: dict, lesson_dir: str) -> None:
     shutil.copytree(
         os.path.join("chefdata", lesson_data["file"], "scormcontent"),
         lesson_dir,
@@ -187,6 +189,9 @@ def prepare_lesson_html5_directory(lesson_data, lesson_dir):
 
     page = BeautifulSoup(html_content, "html.parser")
     head = page.find("head")
+    if head is None:
+        head = page.new_tag("head")
+        page.insert(0, head)
 
     # css to hide menu elements for the course
     existing_style = page.find("style", string=CSS_ADDITION)
