@@ -40,7 +40,7 @@
           "route":"wcAjxT0-ZDjEhg3wIgxAJwji2Q_ZrM4y",
           "file":"start-your-business-unit-3-scorm12-cj-qx9XF",
           "remove_assets":[
-             
+
           ]
        },
        "4":{
@@ -251,9 +251,11 @@
           "title":"Unit 1 - You as an entrepreneur",
           "route":"WfS3ewseORO9nHdWZLRTS-Kq1617nKF9",
           "file":"generate-your-business-unit-1-scorm12-DNOpeENd",
-          "remove_assets":[
-             
-          ]
+          "remove_assets":[ ],
+          "docs":[
+            "6W7ca2ujH17TS9C3_D2cQb0Vnrc6qU6dB-Critical areas for improvement and growth.docx",
+            "3pS6XVGbGhGBkn56_oYjP6hvLYvxaocn1-Identify your business field and type.docx"
+         ]
        },
        "2":{
           "title":"Unit 2 - A market is waiting for you",
@@ -294,7 +296,10 @@
              "D-cq2A-Vdwj5Fm1Q_bC-jr1BcGkZg3Cgw-Your idea list.docx",
              "TPn_Kg-0ib1JZWGc_tz33aIBK1f2GYZiP-Scan your environment.docx",
              "uBwyMksH73cK5ynz_q7CEmoC4UuA7LirS-Draw from experience.docx"
-          ]
+          ],
+          "docs":[
+            "XXGKPEMPNQusJE_6_jnxtNvCOas7i7Rl8-A market is waiting for you.docx"
+         ]
        },
        "3":{
           "title":"Unit 3 - Your own business idea list",
@@ -313,7 +318,13 @@
              "tZrMt8FyNAbS-yFD_ZbRWSWlkHmd6OOVQ.png",
              "WNusm8fYrkhYN1sk_8_food.jpg",
              "usJE_6_jnxtNvCOas7i7Rl8-A market is waiting for you.docx"
-          ]
+          ],
+          "docs":[
+            "6en25M_-ajml3nIT_i-RHK9FhWEpXOk6S-Business idea analysis form.docx",
+            "uBwyMksH73cK5ynz_q7CEmoC4UuA7LirS-Draw from experience.docx",
+            "TPn_Kg-0ib1JZWGc_tz33aIBK1f2GYZiP-Scan your environment.docx",
+            "D-cq2A-Vdwj5Fm1Q_bC-jr1BcGkZg3Cgw-Your idea list.docx"
+         ]
        },
        "4":{
           "title":"Unit 4 - The best business idea for you",
@@ -322,6 +333,10 @@
           "remove_assets":[
              "EfnE703_jbNXSAt3_2ooejumyfVtoaUSf-My business idea.docx",
              "EawqgOL4UwHCDOKg_QyFfvadAMbIUUEFj-Action plan.docx"
+          ],
+          "docs":[
+            "0XjjOITwTaPyTZlK_wTl4-0GoPzo879-M-Field study.docx",
+            "W3acXdRAu8Xb_GXS_zlZ5OGuHSjFb5vhH-SWOT analysis.docx"
           ]
        },
        "5":{
@@ -332,6 +347,10 @@
              "GmtfXPX6wQKMdoBs",
              "0XjjOITwTaPyTZlK_wTl4-0GoPzo879-M-Field study.docx",
              "W3acXdRAu8Xb_GXS_zlZ5OGuHSjFb5vhH-SWOT analysis.docx"
+          ],
+          "docs":[
+            "EfnE703_jbNXSAt3_2ooejumyfVtoaUSf-My business idea.docx",
+            "EawqgOL4UwHCDOKg_QyFfvadAMbIUUEFj-Action plan.docx"
           ]
        }
     },

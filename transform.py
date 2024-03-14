@@ -2,14 +2,16 @@ import io
 import os
 import pickle
 import shutil
+import subprocess
+import sys
 import zipfile
-from typing import Any, List, Optional
 
 from bs4 import BeautifulSoup
-from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build, Resource
+from googleapiclient.discovery import build
+from googleapiclient.discovery import Resource
 from googleapiclient.http import MediaIoBaseDownload
 from PIL import Image
 from ricecooker.config import LOGGER
@@ -20,7 +22,7 @@ CLIENT_TOKEN_PICKLE = "credentials/token.pickle"
 
 
 # Path: transform.py
-SCORM_FILES = "https://drive.google.com/drive/folders/1fNEUMACKy-fLq6XqJZD4VeGuU67GGu3y?usp=sharing"
+SCORM_FILES = "https://drive.google.com/drive/folders/1fNEUMACKy-fLq6XqJZD4VeGuU67GGu3y?usp=sharing"  # noqa: E501
 
 SCORM_FILES_DRIVE_ID = "1fNEUMACKy-fLq6XqJZD4VeGuU67GGu3y"
 
@@ -37,10 +39,17 @@ SCOPES = [
 CSS_ADDITION = """
 /*  Added for kolibri usage */
 .lesson--open {
-padding-left: 0px !important;
+    padding-left: 0px !important;
 }
 .blocks-button__button, .classic .page__menu, .default .page__menu {
-display: none;
+    display: none;
+}
+.block-text__col > .block-attachment.brandHover {
+    display: none;
+}
+
+.classic .cover__details, .cover__header {
+    display: none !important;
 }
 """
 
@@ -108,7 +117,9 @@ def download_file(service: Resource, file_id: str, file_name: str) -> None:
         print(f"Error downloading file {file_name}: {e}")
 
 
-def download_files(gdrive_folder_id: str, mimeType: str, output_folder: str) -> None:
+def download_files(
+    gdrive_folder_id: str, mimeType: str, output_folder: str
+) -> None:  # noqa: E501
     creds = get_credentials()
     service = build("drive", "v3", credentials=creds)
     # List files in the folder
@@ -124,17 +135,23 @@ def download_files(gdrive_folder_id: str, mimeType: str, output_folder: str) -> 
         if item["mimeType"] == "application/vnd.google-apps.folder":
             continue
         if item["mimeType"] == mimeType:
-            download_file(service, item["id"], f"{output_folder}{item['name']}")
+            download_file(
+                service, item["id"], f"{output_folder}{item['name']}"
+            )  # noqa: E501
 
 
 def download_gdrive_files() -> None:
 
     download_files(SCORM_FILES_DRIVE_ID, "application/zip", "chefdata/")
     download_files(
-        START_YOUR_BUSINESS_ID, "application/pdf", "chefdata/start_your_business/"
+        START_YOUR_BUSINESS_ID,
+        "application/pdf",
+        "chefdata/start_your_business/",
     )
     download_files(
-        IMPROVE_YOUR_BUSINESS_ID, "application/pdf", "chefdata/improve_your_business/"
+        IMPROVE_YOUR_BUSINESS_ID,
+        "application/pdf",
+        "chefdata/improve_your_business/",
     )
 
 
@@ -164,6 +181,34 @@ def resize_images(directory: str, max_height: int = 640) -> None:
                     resized.save(filepath, format=resized.format)
 
 
+def convert_docx_to_pdf(directory: str) -> None:
+    for filename in os.listdir(directory):
+        if filename.endswith(".docx"):
+            filepath = os.path.join(directory, filename)
+            pdf_path = "chefdata/converted_files/{}.pdf".format(
+                os.path.basename(os.path.splitext(filepath)[0])
+            )
+
+            if os.path.isfile(filepath) and not os.path.exists(pdf_path):
+                LOGGER.info("Converting {} to pdf...".format(filepath))
+                args = [
+                    "libreoffice",
+                    "--headless",
+                    "--convert-to",
+                    "pdf",
+                    filepath,
+                    "--outdir",
+                    "chefdata/converted_files/",
+                ]
+                try:
+                    subprocess.run(args)
+                except FileNotFoundError:
+                    LOGGER.error(
+                        "LibreOffice must be installed and accesible in order to run this chef."  # noqa: E501
+                    )
+                    sys.exit(1)
+
+
 def prepare_lesson_html5_directory(lesson_data: dict, lesson_dir: str) -> None:
     shutil.copytree(
         os.path.join("chefdata", lesson_data["file"], "scormcontent"),
@@ -182,6 +227,7 @@ def prepare_lesson_html5_directory(lesson_data: dict, lesson_dir: str) -> None:
 
     # reduce size of image files
     resize_images(assets_dir)
+    convert_docx_to_pdf(assets_dir)
 
     index = os.path.join(lesson_dir, "index.html")
     with open(index, "r") as f:
@@ -201,7 +247,9 @@ def prepare_lesson_html5_directory(lesson_data: dict, lesson_dir: str) -> None:
         head.append(new_style)
 
     # js to redirect to the lesson route
-    new_js_code = JS_ADDITION.replace("TO_REPLACE_BY_LESSON_ID", lesson_data["route"])
+    new_js_code = JS_ADDITION.replace(
+        "TO_REPLACE_BY_LESSON_ID", lesson_data["route"]
+    )  # noqa: E501
     existing_script = page.find("script", string=new_js_code)
     if not existing_script:
         new_script = page.new_tag("script")

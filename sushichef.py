@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import json
 import os
-from typing import Any, Dict, List
+from typing import Any
+from typing import Dict
+from typing import List
 
 import requests
 from le_utils.constants.labels import subjects
@@ -22,9 +24,9 @@ from transform import unzip_scorm_files
 
 CHANNEL_NAME = "Start and Improve Your Business"
 CHANNEL_SOURCE_ID = "ilo-siyb"
-SOURCE_DOMAIN = "https://www.ilo.org/empent/areas/start-and-improve-your-business/WCMS_751556/lang--en/index.htm"
+SOURCE_DOMAIN = "https://www.ilo.org/empent/areas/start-and-improve-your-business/WCMS_751556/lang--en/index.htm"  # noqa: E501
 CHANNEL_LANGUAGE = "en"
-CHANNEL_DESCRIPTION = "The Start and Improve Your Business (SIYB) programme is a management-training programme developed by the International Labour Organization (ILO) with a focus on starting and improving small businesses as a strategy for creating more and better employment for women and men, particularly in emerging economies."
+CHANNEL_DESCRIPTION = "The Start and Improve Your Business (SIYB) programme is a management-training programme developed by the International Labour Organization (ILO) with a focus on starting and improving small businesses as a strategy for creating more and better employment for women and men, particularly in emerging economies."  # noqa: E501
 CHANNEL_THUMBNAIL = "chefdata/ilo_siyb.png"
 CONTENT_ARCHIVE_VERSION = 1
 
@@ -68,14 +70,32 @@ class ILOSIYBChef(SushiChef):
                 if not os.path.exists(lesson_dir):  # create lesson app dir
                     lesson_data = self.course_data[course][lesson]
                     prepare_lesson_html5_directory(lesson_data, lesson_dir)
-                LOGGER.info(f"Creating zip for lesson: {lesson} in course {course}")
-                self.course_data[course][lesson]["zipfile"] = create_predictable_zip(
+                LOGGER.info(
+                    f"Creating zip for lesson: {lesson} in course {course}"
+                )  # noqa: E501
+                self.course_data[course][lesson][
+                    "zipfile"
+                ] = create_predictable_zip(  # noqa: E501
                     lesson_dir
                 )
 
     def pre_run(self, args: Any, options: dict) -> None:
         self.course_data = json.load(open("chefdata/course_data.json"))
         LOGGER.info("Downloading files from Google Drive folders")
+
+    def build_doc_node(self, doc: str, lesson_title: str) -> DocumentNode:
+        unit = lesson_title.split(" - ")[0]
+        doc_file = doc.replace(".docx", ".pdf")
+        doc_name = doc_file.split("-")[-1].replace(".pdf", "")
+        doc_node = DocumentNode(
+            source_id=f"{doc.replace(' ', '_')}_id",
+            title=f"{unit} forms: {doc_name}",
+            files=[DocumentFile(f"chefdata/converted_files/{doc_file}")],
+            license=CHANNEL_LICENSE,
+            language="en",
+            categories=categories,
+        )
+        return doc_node
 
     def construct_channel(self, *args, **kwargs) -> ChannelNode:
         channel = self.get_channel(*args, **kwargs)
@@ -111,6 +131,12 @@ class ILOSIYBChef(SushiChef):
                         thumbnail=thumbnail,
                     )
                     topic_node.add_child(zip_node)
+                    if "docs" in lesson_data.keys():
+                        for doc in lesson_data["docs"]:
+                            doc_node = self.build_doc_node(
+                                doc, lesson_data["title"]
+                            )  # noqa: E501
+                            topic_node.add_child(doc_node)
             else:
                 for chapter in self.course_data[course].keys():
                     chapter_dir = chapter.replace(" ", "_").lower()
@@ -133,7 +159,7 @@ class ILOSIYBChef(SushiChef):
                             title=pdf_info["title"],
                             files=[
                                 DocumentFile(
-                                    f"chefdata/{chapter_dir}/{pdf_info['file']}"
+                                    f"chefdata/{chapter_dir}/{pdf_info['file']}"  # noqa: E501
                                 )
                             ],
                             license=CHANNEL_LICENSE,
